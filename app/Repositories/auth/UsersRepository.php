@@ -58,14 +58,15 @@ class UsersRepository
             if(!$user) {
                 $msg = 'Credentials is not valid.';
                 $details = ['credential' => 'Credential is not valid'];
-            }
-            if(Hash::check($request->password, $user->password)) {
-                $details = $user;
-                $result = true;
-                $msg = 'Login success.';
             } else {
-                $msg = 'Credentials is not valid.';
-                $details = ['password' => 'Password does not match'];
+                if(Hash::check($request->password, $user->password)) {
+                    $details = hGenerateJwtToken($user);
+                    $result = true;
+                    $msg = 'Login success.';
+                } else {
+                    $msg = 'Credentials is not valid.';
+                    $details = ['password' => 'Password does not match'];
+                }
             }
             return [ 'details' => $details, 'result' => $result, 'message' => $msg ];
         } catch(Exception $e) {

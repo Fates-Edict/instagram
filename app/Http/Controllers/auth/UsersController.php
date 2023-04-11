@@ -29,12 +29,20 @@ class UsersController extends Controller
     public function login(Request $request)
     {
         try {
+            $payload = [
+                'credential' => [ 'alias' => 'credential', 'rules' => ['required'] ],
+                'password' => [ 'alias' => 'password', 'rules' => ['required'] ]
+            ];
+
+            $hValidator = hValidator($payload);
+            $validator = Validator::make($request->all(), $hValidator[0], $hValidator[1]);
+            if($validator->fails()) return hApiResponse('Authentication is failed.', $validator->errors(), 400);
             $response = $this->repository->login($request);
             $statusCode = 200;
             if(!$response['result']) $statusCode = 404;
             return hApiResponse($response['details'], $response['message'], $statusCode);
         } catch(Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new Exception($e);
         }
     }
 

@@ -1,5 +1,9 @@
 <?php
 
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 function hValidator($payload = []) {
     $messageFactories = [
         'required' => 'is required.',
@@ -30,4 +34,23 @@ function hApiResponse($data, $message = 'success', $code = 200)
 {
     $res = ['message' => $message, 'data' => $data];
     return response($res, $code);
+}
+
+function hGenerateJwtToken($user)
+{
+    $key = env('JWT_SECRET_KEY', 'asdhaskjdhasjkdhqwuyerfqwytgehvdsanbm');
+    $expired = env('JWT_EXPIRED', 120);
+    $payload = [
+        'iss'       => env('FRONTEND_URL'),
+        'data'      => [ 
+            'username'  => $user->username,
+            'name'      => $user->name,
+            'phone'     => $user->phone
+        ],
+        'iat'       => time(),
+        'expired'   =>  Carbon::now()->addMinutes($expired)->timestamp,
+    ];
+
+    $encode = JWT::encode($payload, $key, 'HS256');
+    return [ 'token' => $encode ];
 }
