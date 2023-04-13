@@ -11,4 +11,9 @@ class UserFriendships extends Model
 
     protected $table = 'auth.user_friendships';
     protected $guarded = ['id'];
+
+    public function User()
+    {
+        return $this->belongsTo(Users::class);
+    }
 }

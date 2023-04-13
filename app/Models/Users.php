@@ -13,4 +13,14 @@ class Users extends Model
     protected $primaryKey = 'id';
     protected $guarded = ['id'];
     protected $hidden = ['password'];
+
+    public function Following()
+    {
+        return $this->hasMany(UserFriendships::class, 'user_id', 'id');
+    }
+
+    public function Followers()
+    {
+        return $this->hasMany(UserFriendships::class, 'follower_id', 'id');
+    }
 }

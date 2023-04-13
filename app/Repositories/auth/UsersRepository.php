@@ -26,7 +26,7 @@ class UsersRepository
     {
         try {
             if($request->has('search')) {
-                $data = $this->model->where('username', 'LIKE', '%' . $request->search . '%')->limit(50)->get();
+                $data = $this->model->select(['username', 'name', 'profile'])->where('username', 'LIKE', '%' . $request->search . '%')->limit(50)->withCount('Followers')->get();
             } else $data = $this->model->all();
             return $data;
         } catch(Exception $e) {
