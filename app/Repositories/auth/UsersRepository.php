@@ -25,7 +25,9 @@ class UsersRepository
     public function index($request)
     {
         try {
-            $data = $this->model->all();
+            if($request->has('search')) {
+                $data = $this->model->where('username', 'LIKE', '%' . $request->search . '%')->limit(50)->get();
+            } else $data = $this->model->all();
             return $data;
         } catch(Exception $e) {
             throw new Exception($e->getMessage());
@@ -60,7 +62,15 @@ class UsersRepository
                 $details = ['credential' => 'Credential is not valid'];
             } else {
                 if(Hash::check($request->password, $user->password)) {
-                    $details = hGenerateJwtToken($user);
+                    unset($user->id);
+                    unset($user->phone);
+                    unset($user->created_at);
+                    unset($user->created_by);
+                    unset($user->deleted_at);
+                    unset($user->deleted_by);
+                    unset($user->updated_at);
+                    unset($user->updated_by);
+                    $details = ['data' => $user, 'token' => hGenerateJwtToken($user)];
                     $result = true;
                     $msg = 'Login success.';
                 } else {

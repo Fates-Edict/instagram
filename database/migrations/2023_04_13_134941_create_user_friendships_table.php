@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('auth.users', function (Blueprint $table) {
+        Schema::create('auth.user_friendships', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('username')->unique();
-            $table->string('phone')->unique()->nullable();
-            $table->string('password');
-            $table->string('profile')->nullable();
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('follower_id')->index();
 
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('auth.users');
+        Schema::dropIfExists('auth.user_friendships');
     }
 };

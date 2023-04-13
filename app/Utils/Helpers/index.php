@@ -52,5 +52,5 @@ function hGenerateJwtToken($user)
     ];
 
     $encode = JWT::encode($payload, $key, 'HS256');
-    return [ 'token' => $encode ];
+    return $encode;
 }
